@@ -51,11 +51,11 @@ def _compute_fans(
       receptive_field_size = np.prod(shape[:-2])
       fan_in = shape[-2] * receptive_field_size
       fan_out = shape[-1] * receptive_field_size
-  return fan_in, fan_out
+  return fan_in, fan_out  # pyrefly: ignore[bad-return]
 
 
 @gin.register
-class ReducingVarianceScaling(hk.initializers.Initializer):
+class ReducingVarianceScaling(hk.initializers.Initializer):  # pyrefly: ignore[invalid-inheritance]
   """Initializer that result in variance that reduces as width increases.
 
   Initializes weights that result in features with expected variance of

@@ -91,7 +91,7 @@ class CombinedDiagnostics:
       dt: float,
       physics_specs: Any,
       aux_features: dict[str, Any],
-      diagnostic_modules: abc.Sequence[DiagnosticModule] = gin.REQUIRED,
+      diagnostic_modules: abc.Sequence[DiagnosticModule] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
   ):
     self.diagnostic_fns = [
         module(coords, dt, physics_specs, aux_features)
@@ -221,7 +221,7 @@ class PrecipitableWaterDiagnostics:
     p_surface = jnp.squeeze(jnp.exp(self.to_nodal_fn(lsp)), axis=0)
     moisture_tracers = [
         v
-        for tracer, v in model_state.tracers.items()
+        for tracer, v in model_state.tracers.items()  # pyrefly: ignore[missing-attribute]
         if tracer in self.moisture_species
     ]
     moisture = sum(self.to_nodal_fn(moisture_tracers))

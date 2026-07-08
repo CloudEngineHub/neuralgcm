@@ -281,7 +281,7 @@ def get_model_specs(
     if reference_datetime_str is not None:
       raise ValueError('reference datetime already specified in aux_data')
 
-  if isinstance(model_time_step, (str, scales.Quantity)):
+  if isinstance(model_time_step, (str, scales.Quantity)):  # pyrefly: ignore[invalid-argument]
     dt = physics_specs.nondimensionalize(scales.Quantity(model_time_step))
   else:
     dt = model_time_step
@@ -353,7 +353,7 @@ class DynamicalSystem(hk.Module):
         sim_time = getattr(x.state, 'sim_time', None)
       else:
         sim_time = getattr(x, 'sim_time', None)
-      forcing = self.forcing_fn(forcing_data, sim_time)
+      forcing = self.forcing_fn(forcing_data, sim_time)  # pyrefly: ignore[bad-argument-type]
       x, forcing = self.coords.with_dycore_sharding((x, forcing))
       y = self.advance(x, forcing)
       y = self.coords.with_dycore_sharding(y)
@@ -395,11 +395,11 @@ class ModularStepModel(DynamicalSystem):
         output_coords,
         name=name,
     )
-    self.advance_fn = advance_module(coords, dt, physics_specs, aux_features)
-    self.encoder_fn = encoder_module(
+    self.advance_fn = advance_module(coords, dt, physics_specs, aux_features)  # pyrefly: ignore[not-callable]
+    self.encoder_fn = encoder_module(  # pyrefly: ignore[not-callable]
         coords, dt, physics_specs, aux_features, input_coords
     )
-    self.decoder_fn = decoder_module(
+    self.decoder_fn = decoder_module(  # pyrefly: ignore[not-callable]
         coords, dt, physics_specs, aux_features, output_coords
     )
     self.forcing_fn = forcing_module(coords, dt, physics_specs, aux_features)
@@ -448,11 +448,11 @@ class StochasticModularStepModel(DynamicalSystem):
         output_coords,
         name=name,
     )
-    self.advance_fn = advance_module(coords, dt, physics_specs, aux_features)
-    self.encoder_fn = encoder_module(
+    self.advance_fn = advance_module(coords, dt, physics_specs, aux_features)  # pyrefly: ignore[not-callable]
+    self.encoder_fn = encoder_module(  # pyrefly: ignore[not-callable]
         coords, dt, physics_specs, aux_features, input_coords
     )
-    self.decoder_fn = decoder_module(
+    self.decoder_fn = decoder_module(  # pyrefly: ignore[not-callable]
         coords, dt, physics_specs, aux_features, output_coords
     )
     self.forcing_fn = forcing_module(coords, dt, physics_specs, aux_features)
@@ -564,7 +564,7 @@ class WhirlModel:
       aux_features: Optional[AuxFeatures] = None,
       input_coords: Optional[coordinate_systems.CoordinateSystem] = None,
       output_coords: Optional[coordinate_systems.CoordinateSystem] = None,
-      model_cls: Callable[[], DynamicalSystem] = gin.REQUIRED,
+      model_cls: Callable[[], DynamicalSystem] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
       to_xarray_fn: Optional[Callable[..., xarray.Dataset]] = None,
       from_xarray_fn: Optional[Callable[..., DataState]] = None,
   ):

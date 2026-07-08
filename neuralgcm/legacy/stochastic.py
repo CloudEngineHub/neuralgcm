@@ -151,12 +151,12 @@ class NoRandomField(RandomField):
       self, rng: typing.PRNGKeyArray | None
   ) -> RandomnessState:
     """Returns a zeros initialized state."""
-    return RandomnessState(prng_key=rng, prng_step=0)
+    return RandomnessState(prng_key=rng, prng_step=0)  # pyrefly: ignore[unexpected-keyword]
 
   def advance(self, state: RandomnessState) -> RandomnessState:
     """Updates the state of a random gaussian field."""
     return RandomnessState(
-        prng_key=state.prng_key, prng_step=state.prng_step + 1
+        prng_key=state.prng_key, prng_step=state.prng_step + 1  # pyrefly: ignore[unexpected-keyword, unsupported-operation]
     )
 
   def to_nodal_values(self, core_state: CoreRandomState) -> typing.Array | None:
@@ -212,22 +212,22 @@ class ZerosRandomField(RandomField):
     else:
       core = jnp.zeros(self.coords.horizontal.modal_shape)
     return RandomnessState(
-        core=core,
-        nodal_value=jnp.zeros(self.coords.horizontal.nodal_shape),
-        modal_value=jnp.zeros(self.coords.horizontal.modal_shape),
-        prng_key=rng,
-        prng_step=0,
+        core=core,  # pyrefly: ignore[unexpected-keyword]
+        nodal_value=jnp.zeros(self.coords.horizontal.nodal_shape),  # pyrefly: ignore[unexpected-keyword]
+        modal_value=jnp.zeros(self.coords.horizontal.modal_shape),  # pyrefly: ignore[unexpected-keyword]
+        prng_key=rng,  # pyrefly: ignore[unexpected-keyword]
+        prng_step=0,  # pyrefly: ignore[unexpected-keyword]
     )
 
   def advance(self, state: RandomnessState) -> RandomnessState:
     """Updates the state of a random gaussian field."""
     _validate_randomness_state(state)
     return RandomnessState(
-        core=jnp.zeros_like(state.core),
-        nodal_value=jnp.zeros(self.coords.horizontal.nodal_shape),
-        modal_value=jnp.zeros(self.coords.horizontal.modal_shape),
-        prng_key=state.prng_key,
-        prng_step=state.prng_step + 1,
+        core=jnp.zeros_like(state.core),  # pyrefly: ignore[bad-argument-type, unexpected-keyword]
+        nodal_value=jnp.zeros(self.coords.horizontal.nodal_shape),  # pyrefly: ignore[unexpected-keyword]
+        modal_value=jnp.zeros(self.coords.horizontal.modal_shape),  # pyrefly: ignore[unexpected-keyword]
+        prng_key=state.prng_key,  # pyrefly: ignore[unexpected-keyword]
+        prng_step=state.prng_step + 1,  # pyrefly: ignore[unexpected-keyword, unsupported-operation]
     )
 
   def to_nodal_values(self, core_state: CoreRandomState) -> typing.Array | None:
@@ -308,9 +308,9 @@ class GaussianRandomField(RandomField):
     )
 
     # In sampling, phi appears as 1 - phi**2 = 1 - exp(-2 dt / tau)
-    self.one_minus_phi2 = -jnp.expm1(-2 * dt / tau)
+    self.one_minus_phi2 = -jnp.expm1(-2 * dt / tau)  # pyrefly: ignore[unsupported-operation]
 
-    self.phi = jnp.exp(-dt / tau)
+    self.phi = jnp.exp(-dt / tau)  # pyrefly: ignore[unsupported-operation]
 
     self._variance = maybe_nondimensionalize(variance, physics_specs)  # σ²
 
@@ -351,7 +351,7 @@ class GaussianRandomField(RandomField):
     # We do not include the extra fator of 2 in the denominator. I do not know
     # why [Palmer] has this factor.
     normalization = jnp.sqrt(
-        self._integrated_grf_variance()
+        self._integrated_grf_variance()  # pyrefly: ignore[unsupported-operation]
         * self.one_minus_phi2
         / sum_unnormed_vars
     )
@@ -366,11 +366,11 @@ class GaussianRandomField(RandomField):
     rng, next_rng = jax.random.split(rng)
     if self.variance is None:
       return RandomnessState(
-          core=jnp.zeros(modal_shape),
-          nodal_value=jnp.zeros(self.coords.horizontal.nodal_shape),
-          modal_value=jnp.zeros(modal_shape),
-          prng_key=next_rng,
-          prng_step=0,
+          core=jnp.zeros(modal_shape),  # pyrefly: ignore[unexpected-keyword]
+          nodal_value=jnp.zeros(self.coords.horizontal.nodal_shape),  # pyrefly: ignore[unexpected-keyword]
+          modal_value=jnp.zeros(modal_shape),  # pyrefly: ignore[unexpected-keyword]
+          prng_key=next_rng,  # pyrefly: ignore[unexpected-keyword]
+          prng_step=0,  # pyrefly: ignore[unexpected-keyword]
       )
     sigmas = self._sigma_array()
     weights = jnp.where(
@@ -380,11 +380,11 @@ class GaussianRandomField(RandomField):
     )
     core = self.one_minus_phi2 ** (-0.5) * sigmas * weights
     return RandomnessState(
-        core=core,
-        nodal_value=self.to_nodal_values(core),
-        modal_value=self.to_modal_values(core),
-        prng_key=next_rng,
-        prng_step=0,
+        core=core,  # pyrefly: ignore[unexpected-keyword]
+        nodal_value=self.to_nodal_values(core),  # pyrefly: ignore[unexpected-keyword]
+        modal_value=self.to_modal_values(core),  # pyrefly: ignore[unexpected-keyword]
+        prng_key=next_rng,  # pyrefly: ignore[unexpected-keyword]
+        prng_step=0,  # pyrefly: ignore[unexpected-keyword]
     )
 
   def advance(self, state: RandomnessState) -> RandomnessState:
@@ -392,24 +392,24 @@ class GaussianRandomField(RandomField):
     _validate_randomness_state(state)
     if self.variance is None:
       return RandomnessState(
-          core=jnp.zeros_like(state.core),
-          nodal_value=jnp.zeros(self.coords.horizontal.nodal_shape),
-          modal_value=jnp.zeros(self.coords.horizontal.modal_shape),
-          prng_key=state.prng_key,
-          prng_step=state.prng_step + 1,
+          core=jnp.zeros_like(state.core),  # pyrefly: ignore[bad-argument-type, unexpected-keyword]
+          nodal_value=jnp.zeros(self.coords.horizontal.nodal_shape),  # pyrefly: ignore[unexpected-keyword]
+          modal_value=jnp.zeros(self.coords.horizontal.modal_shape),  # pyrefly: ignore[unexpected-keyword]
+          prng_key=state.prng_key,  # pyrefly: ignore[unexpected-keyword]
+          prng_step=state.prng_step + 1,  # pyrefly: ignore[unexpected-keyword, unsupported-operation]
       )
     modal_shape = self.coords.horizontal.modal_shape
     rng = _prng_key_for_current_advance_step(state)
-    eta = jax.random.truncated_normal(rng, -self.clip, self.clip, modal_shape)
-    next_core = state.core * self.phi + self._sigma_array() * jnp.where(
+    eta = jax.random.truncated_normal(rng, -self.clip, self.clip, modal_shape)  # pyrefly: ignore[bad-argument-type]
+    next_core = state.core * self.phi + self._sigma_array() * jnp.where(  # pyrefly: ignore[unsupported-operation]
         self.coords.horizontal.mask, eta, jnp.zeros(modal_shape)
     )
     return RandomnessState(
-        core=next_core,
-        nodal_value=self.to_nodal_values(next_core),
-        modal_value=self.to_modal_values(next_core),
-        prng_key=state.prng_key,
-        prng_step=state.prng_step + 1,
+        core=next_core,  # pyrefly: ignore[unexpected-keyword]
+        nodal_value=self.to_nodal_values(next_core),  # pyrefly: ignore[unexpected-keyword]
+        modal_value=self.to_modal_values(next_core),  # pyrefly: ignore[unexpected-keyword]
+        prng_key=state.prng_key,  # pyrefly: ignore[unexpected-keyword]
+        prng_step=state.prng_step + 1,  # pyrefly: ignore[unexpected-keyword, unsupported-operation]
     )
 
   @property
@@ -516,19 +516,19 @@ class GaussianRandomFieldModule(GaussianRandomField, hk.Module):
       variance = None
     elif variance_bound in {None, 'None'}:  # Allow strings for gin.
       variance = convert_hk_param_to_positive_scalar(
-          variance_raw, initial_variance
+          variance_raw, initial_variance  # pyrefly: ignore[bad-argument-type]
       )
     else:
       variance_bound = maybe_nondimensionalize(variance_bound, physics_specs)
       _assert_positive_or_none(variance_bound, 'variance_bound')
       _assert_positive_or_none(
-          variance_bound - initial_variance, 'variance_bound - initial_variance'
+          variance_bound - initial_variance, 'variance_bound - initial_variance'  # pyrefly: ignore[unsupported-operation]
       )
       variance = convert_hk_param_to_bounded_scalar(
-          variance_raw,
+          variance_raw,  # pyrefly: ignore[bad-argument-type]
           initial_variance,
           low=0.0,
-          high=variance_bound,
+          high=variance_bound,  # pyrefly: ignore[bad-argument-type]
       )
 
     # We call GaussianRandomFieldModule.__init__ rather than super().__init__
@@ -542,11 +542,11 @@ class GaussianRandomFieldModule(GaussianRandomField, hk.Module):
         aux_features=aux_features,
         correlation_time=convert_hk_param_to_positive_scalar(
             correlation_time_raw,
-            maybe_nondimensionalize(initial_correlation_time, physics_specs),
+            maybe_nondimensionalize(initial_correlation_time, physics_specs),  # pyrefly: ignore[bad-argument-type]
         ),
         correlation_length=convert_hk_param_to_positive_scalar(
             correlation_length_raw,
-            maybe_nondimensionalize(initial_correlation_length, physics_specs),
+            maybe_nondimensionalize(initial_correlation_length, physics_specs),  # pyrefly: ignore[bad-argument-type]
         ),
         variance=variance,
         clip=clip,
@@ -583,7 +583,7 @@ class CenteredLognormalRandomField(GaussianRandomField):
     if self.variance is None:
       grf_variance = 0.0
     else:
-      grf_variance = self._integrated_grf_variance() / self._surf_area
+      grf_variance = self._integrated_grf_variance() / self._surf_area  # pyrefly: ignore[unsupported-operation]
     # If Z ~ Normal(μ, σ²), then X ~ exp(Z) has mean exp(μ + σ²/2).
     # To ensure E[X] = 1, we must set μ = -σ²/2.
     x = self.coords.horizontal.to_nodal(core_state)  # ~ Normal(0, σ²)
@@ -621,9 +621,9 @@ class BatchGaussianRandomFieldModule(hk.Module):
       dt: float,
       physics_specs: Any,
       aux_features: Any,
-      initial_correlation_times: Sequence[Quantity | str] = gin.REQUIRED,
-      initial_correlation_lengths: Sequence[Quantity | str] = gin.REQUIRED,
-      variances: Sequence[Quantity | str] = gin.REQUIRED,
+      initial_correlation_times: Sequence[Quantity | str] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
+      initial_correlation_lengths: Sequence[Quantity | str] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
+      variances: Sequence[Quantity | str] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
       field_subset: Optional[Sequence[int]] = None,
       n_fixed_fields: Optional[int] = None,
       clip: float = 6.0,
@@ -693,7 +693,7 @@ class BatchGaussianRandomFieldModule(hk.Module):
         [nondimensionalize(v, physics_specs) for v in variances]
     )
 
-    initial_correlation_lengths = jnp.array([
+    initial_correlation_lengths = jnp.array([  # pyrefly: ignore[bad-assignment]
         nondimensionalize(l, physics_specs) for l in initial_correlation_lengths
     ])
     correlation_lengths_raw = hk.get_parameter(
@@ -705,10 +705,10 @@ class BatchGaussianRandomFieldModule(hk.Module):
       correlation_lengths_raw = jnp.concatenate([
           correlation_lengths_raw, jnp.zeros([n_fixed_fields])])
     self._correlation_lengths = convert_hk_param_to_positive_scalar(
-        correlation_lengths_raw, initial_correlation_lengths
+        correlation_lengths_raw, initial_correlation_lengths  # pyrefly: ignore[bad-argument-type]
     )
 
-    initial_correlation_times = jnp.array(
+    initial_correlation_times = jnp.array(  # pyrefly: ignore[bad-assignment]
         [nondimensionalize(t, physics_specs) for t in initial_correlation_times]
     )
     correlation_times_raw = hk.get_parameter(
@@ -720,7 +720,7 @@ class BatchGaussianRandomFieldModule(hk.Module):
       correlation_times_raw = jnp.concatenate([
           correlation_times_raw, jnp.zeros([n_fixed_fields])])
     self._correlation_times = convert_hk_param_to_positive_scalar(
-        correlation_times_raw, initial_correlation_times
+        correlation_times_raw, initial_correlation_times  # pyrefly: ignore[bad-argument-type]
     )
 
     def make_rf(correlation_time, correlation_length, variance):
@@ -774,16 +774,16 @@ class BatchGaussianRandomFieldModule(hk.Module):
       return rf.advance(state)
 
     rng = _prng_key_for_current_advance_step(state)
-    rngs = jax.random.split(rng, self.n_fields)
-    steps = jnp.ones(self.n_fields, int) * state.prng_step
+    rngs = jax.random.split(rng, self.n_fields)  # pyrefly: ignore[bad-argument-type]
+    steps = jnp.ones(self.n_fields, int) * state.prng_step  # pyrefly: ignore[unsupported-operation]
     advanced = jax.vmap(_advance_one_rf)(
-        dataclasses.replace(state, prng_key=rngs, prng_step=steps),
+        dataclasses.replace(state, prng_key=rngs, prng_step=steps),  # pyrefly: ignore[bad-specialization]
         self._correlation_times,
         self._correlation_lengths,
         self._variances,
     )
     return dataclasses.replace(
-        advanced, prng_key=state.prng_key, prng_step=state.prng_step + 1
+        advanced, prng_key=state.prng_key, prng_step=state.prng_step + 1  # pyrefly: ignore[unsupported-operation]
     )
 
 
@@ -800,9 +800,9 @@ class DictOfGaussianRandomFieldModules(hk.Module):
       dt: float,
       physics_specs: Any,
       aux_features: Any,
-      initial_correlation_times: Sequence[Quantity | str] = gin.REQUIRED,
-      initial_correlation_lengths: Sequence[Quantity | str] = gin.REQUIRED,
-      variances: Sequence[Quantity | str] = gin.REQUIRED,
+      initial_correlation_times: Sequence[Quantity | str] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
+      initial_correlation_lengths: Sequence[Quantity | str] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
+      variances: Sequence[Quantity | str] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
       field_names: Optional[Sequence[str]] = None,
       field_subset: Optional[Sequence[int]] = None,
       clip: float = 6.0,
@@ -911,11 +911,11 @@ class DictOfGaussianRandomFieldModules(hk.Module):
       nodal_values[name] = rvs.nodal_value
       modal_values[name] = rvs.modal_value
     return RandomnessState(
-        core=core,
-        nodal_value=nodal_values,
-        modal_value=modal_values,
-        prng_key=next_rng,
-        prng_step=0,
+        core=core,  # pyrefly: ignore[unexpected-keyword]
+        nodal_value=nodal_values,  # pyrefly: ignore[unexpected-keyword]
+        modal_value=modal_values,  # pyrefly: ignore[unexpected-keyword]
+        prng_key=next_rng,  # pyrefly: ignore[unexpected-keyword]
+        prng_step=0,  # pyrefly: ignore[unexpected-keyword]
     )
 
   def advance(self, state: RandomnessState) -> RandomnessState:
@@ -924,21 +924,21 @@ class DictOfGaussianRandomFieldModules(hk.Module):
     nodal_values = {}
     modal_values = {}
     rng = _prng_key_for_current_advance_step(state)
-    rngs = jax.random.split(rng, self.n_fields)
+    rngs = jax.random.split(rng, self.n_fields)  # pyrefly: ignore[bad-argument-type]
     for (name, rf), sample_key in zip(self._random_fields.items(), rngs):
       # rvs is a RandomnessState.
       rvs = rf.advance(
-          RandomnessState(state.core[name], prng_key=sample_key, prng_step=0)
+          RandomnessState(state.core[name], prng_key=sample_key, prng_step=0)  # pyrefly: ignore[bad-argument-count, unexpected-keyword, unsupported-operation]
       )
       core[name] = rvs.core
       nodal_values[name] = rvs.nodal_value
       modal_values[name] = rvs.modal_value
     return RandomnessState(
-        core=core,
-        nodal_value=nodal_values,
-        modal_value=modal_values,
-        prng_key=state.prng_key,
-        prng_step=state.prng_step + 1,
+        core=core,  # pyrefly: ignore[unexpected-keyword]
+        nodal_value=nodal_values,  # pyrefly: ignore[unexpected-keyword]
+        modal_value=modal_values,  # pyrefly: ignore[unexpected-keyword]
+        prng_key=state.prng_key,  # pyrefly: ignore[unexpected-keyword]
+        prng_step=state.prng_step + 1,  # pyrefly: ignore[unexpected-keyword, unsupported-operation]
     )
 
 
@@ -975,29 +975,29 @@ class SumOfRandomFields(RandomField):
     for rf, sample_key in zip(self._random_fields, rngs, strict=True):
       rvs.append(rf.unconditional_sample(sample_key).core)
     return RandomnessState(
-        core=rvs,
-        nodal_value=self.to_nodal_values(rvs),
-        modal_value=self.to_modal_values(rvs),
-        prng_key=next_rng,
-        prng_step=0,
+        core=rvs,  # pyrefly: ignore[unexpected-keyword]
+        nodal_value=self.to_nodal_values(rvs),  # pyrefly: ignore[unexpected-keyword]
+        modal_value=self.to_modal_values(rvs),  # pyrefly: ignore[unexpected-keyword]
+        prng_key=next_rng,  # pyrefly: ignore[unexpected-keyword]
+        prng_step=0,  # pyrefly: ignore[unexpected-keyword]
     )
 
   def advance(self, state: RandomnessState) -> RandomnessState:
     """Updates the core state of a random field."""
     rvs = []
     rng = _prng_key_for_current_advance_step(state)
-    rngs = jax.random.split(rng, len(self._random_fields))
+    rngs = jax.random.split(rng, len(self._random_fields))  # pyrefly: ignore[bad-argument-type]
     for rf, s, k in zip(
-        self._random_fields, state.core, rngs, strict=True
+        self._random_fields, state.core, rngs, strict=True  # pyrefly: ignore[bad-argument-type]
     ):
-      rs = RandomnessState(s, prng_key=k, prng_step=state.prng_step)
+      rs = RandomnessState(s, prng_key=k, prng_step=state.prng_step)  # pyrefly: ignore[bad-argument-count, unexpected-keyword]
       rvs.append(rf.advance(rs).core)
     return RandomnessState(
-        core=rvs,
-        nodal_value=self.to_nodal_values(rvs),
-        modal_value=self.to_modal_values(rvs),
-        prng_key=state.prng_key,
-        prng_step=state.prng_step + 1,
+        core=rvs,  # pyrefly: ignore[unexpected-keyword]
+        nodal_value=self.to_nodal_values(rvs),  # pyrefly: ignore[unexpected-keyword]
+        modal_value=self.to_modal_values(rvs),  # pyrefly: ignore[unexpected-keyword]
+        prng_key=state.prng_key,  # pyrefly: ignore[unexpected-keyword]
+        prng_step=state.prng_step + 1,  # pyrefly: ignore[unexpected-keyword, unsupported-operation]
     )
 
   def to_modal_values(self, core_state: CoreRandomState) -> typing.Array | None:
@@ -1006,9 +1006,9 @@ class SumOfRandomFields(RandomField):
     nodal_sum = 0.0
     for rf, s in zip(self._random_fields, core_state, strict=True):
       if rf.preferred_representation == PreferredRepresentation.NODAL:
-        nodal_sum += rf.to_nodal_values(s)
+        nodal_sum += rf.to_nodal_values(s)  # pyrefly: ignore[unsupported-operation]
       elif rf.preferred_representation in [PreferredRepresentation.MODAL, None]:
-        modal_sum += rf.to_modal_values(s)
+        modal_sum += rf.to_modal_values(s)  # pyrefly: ignore[unsupported-operation]
     return modal_sum + self.coords.horizontal.to_modal(nodal_sum)
 
   def to_nodal_values(self, core_state: CoreRandomState) -> typing.Array | None:
@@ -1017,9 +1017,9 @@ class SumOfRandomFields(RandomField):
     nodal_sum = 0.0
     for rf, s in zip(self._random_fields, core_state, strict=True):
       if rf.preferred_representation == PreferredRepresentation.MODAL:
-        modal_sum += rf.to_modal_values(s)
+        modal_sum += rf.to_modal_values(s)  # pyrefly: ignore[unsupported-operation]
       elif rf.preferred_representation in [PreferredRepresentation.NODAL, None]:
-        nodal_sum += rf.to_nodal_values(s)
+        nodal_sum += rf.to_nodal_values(s)  # pyrefly: ignore[unsupported-operation]
     return nodal_sum + self.coords.horizontal.to_nodal(modal_sum)
 
 
@@ -1034,11 +1034,11 @@ class SumOfGaussianLikeRandomFields(SumOfRandomFields, abc.ABC):
       aux_features: Any,
       correlation_times: Sequence[
           Union[jax.Array, Quantity, str]
-      ] = gin.REQUIRED,
+      ] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
       correlation_lengths: Sequence[
           Union[jax.Array, Quantity, str]
-      ] = gin.REQUIRED,
-      variances: Sequence[Union[jax.Array, Quantity, str]] = gin.REQUIRED,
+      ] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
+      variances: Sequence[Union[jax.Array, Quantity, str]] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
       clip: float = 6.0,
   ):
     """Constructs a SumOfGaussianLikeRandomFields."""
@@ -1083,10 +1083,10 @@ class SumOfGaussianLikeRandomFieldsModule(
       dt: float,
       physics_specs: Any,
       aux_features: Any,
-      initial_correlation_times: Sequence[Quantity | str] = gin.REQUIRED,
-      initial_correlation_lengths: Sequence[Quantity | str] = gin.REQUIRED,
-      initial_variances: Optional[Sequence[Quantity | str]] = gin.REQUIRED,
-      variance_bounds: Optional[Sequence[Quantity | str]] = gin.REQUIRED,
+      initial_correlation_times: Sequence[Quantity | str] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
+      initial_correlation_lengths: Sequence[Quantity | str] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
+      initial_variances: Optional[Sequence[Quantity | str]] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
+      variance_bounds: Optional[Sequence[Quantity | str]] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
       clip: float = 6.0,
       name: Optional[str] = None,
   ):
@@ -1171,7 +1171,7 @@ def convert_hk_param_to_positive_scalar(
     initial_value: Numeric,
 ) -> jax.Array:
   """Converts [batch] scalar parameter to scalar value using Softplus."""
-  return initial_value * make_positive_scalar(param)
+  return initial_value * make_positive_scalar(param)  # pyrefly: ignore[bad-return]
 
 
 def _sigmoid(low: Numeric, high: Numeric, x: jax.Array) -> jax.Array:
@@ -1194,7 +1194,7 @@ def convert_hk_param_to_bounded_scalar(
     high: Numeric,
 ) -> jax.Array:
   """Converts a [batch] scalar parameter to scalar value using Sigmoid."""
-  offset = _inv_sigmoid(low, high, initial_value)
+  offset = _inv_sigmoid(low, high, initial_value)  # pyrefly: ignore[bad-argument-type]
   return _sigmoid(low, high, offset + param)
 
 
@@ -1202,7 +1202,7 @@ def nondimensionalize(
     x: Union[typing.Numeric, Quantity, str],
     physics_specs: Any,
 ) -> typing.Numeric:
-  if isinstance(x, (Quantity, str)):
+  if isinstance(x, (Quantity, str)):  # pyrefly: ignore[invalid-argument]
     return physics_specs.nondimensionalize(Quantity(x))
   else:
     return x

@@ -486,12 +486,12 @@ class PrimitiveToWeatherbenchDecoder(hk.Module):
     # use constant extrapolation for `u, v, tracers`.
     # use linear extrapolation for `z, t`.
     return weatherbench_utils.State(
-        u=regrid_with_constant_fn(u),
-        v=regrid_with_constant_fn(v),
-        t=regrid_with_linear_fn(t),
-        z=regrid_with_linear_fn(z),
-        sim_time=inputs.sim_time,
-        tracers=regrid_with_constant_fn(tracers),
+        u=regrid_with_constant_fn(u),  # pyrefly: ignore[unexpected-keyword]
+        v=regrid_with_constant_fn(v),  # pyrefly: ignore[unexpected-keyword]
+        t=regrid_with_linear_fn(t),  # pyrefly: ignore[unexpected-keyword]
+        z=regrid_with_linear_fn(z),  # pyrefly: ignore[unexpected-keyword]
+        sim_time=inputs.sim_time,  # pyrefly: ignore[unexpected-keyword]
+        tracers=regrid_with_constant_fn(tracers),  # pyrefly: ignore[unexpected-keyword]
     )
 
   def __call__(
@@ -499,7 +499,7 @@ class PrimitiveToWeatherbenchDecoder(hk.Module):
   ) -> DataState:
     del forcing
     wb_on_sigma = self.primitive_to_weatherbench(inputs.state)
-    return self.transform_fn(wb_on_sigma.asdict())
+    return self.transform_fn(wb_on_sigma.asdict())  # pyrefly: ignore[missing-attribute]
 
 
 _DECODER_SALT = zlib.crc32(b'decoder')  # arbitrary uint32 value
@@ -594,7 +594,7 @@ class LearnedPrimitiveToWeatherbenchDecoder(PrimitiveToWeatherbenchDecoder):
     # TODO(dkochkov) Could we pass physics_tendencies here?
     # TODO(janniyuval) Consider using evaporation diagnostics for training.
     decoder_diagnostics = self.diagnostic_fn(inputs, None)
-    wb_on_pressure_dict = self.primitive_to_weatherbench(prognostics).asdict()
+    wb_on_pressure_dict = self.primitive_to_weatherbench(prognostics).asdict()  # pyrefly: ignore[missing-attribute]
     wb_on_pressure_modal = coordinate_systems.maybe_to_modal(
         self.coords.physics_to_dycore_sharding(wb_on_pressure_dict),
         self.output_coords,

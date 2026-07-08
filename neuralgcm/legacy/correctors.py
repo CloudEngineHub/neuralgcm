@@ -89,8 +89,8 @@ class DycoreWithPhysicsCorrector(hk.Module):
       dt: float,
       physics_specs: Any,
       aux_features: typing.AuxFeatures,
-      dycore_equation_module: EquationModule = gin.REQUIRED,
-      dycore_substeps: int = gin.REQUIRED,
+      dycore_equation_module: EquationModule = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
+      dycore_substeps: int = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
       time_integrator: TimeIntegrator = integrators.imex_rk_sil3,
       filter_module: StepFilterModule = filters.NoFilter,
       checkpoint_explicit_terms: bool = True,
@@ -103,7 +103,7 @@ class DycoreWithPhysicsCorrector(hk.Module):
       dycore_equation = time_integration.ImplicitExplicitODE.from_functions(
           hk.remat(dycore_equation.explicit_terms),
           dycore_equation.implicit_terms,
-          dycore_equation.implicit_inverse)
+          dycore_equation.implicit_inverse)  # pyrefly: ignore[bad-argument-type]
     self.coords = coords
     self.dycore_equation = dycore_equation
     self.dycore_substeps = dycore_substeps
@@ -149,8 +149,8 @@ class CustomCoordsCorrector(hk.Module):
       dt: float,
       physics_specs: Any,
       aux_features: typing.AuxFeatures,
-      corrector_module: CorrectorModule = gin.REQUIRED,
-      custom_coords: coordinate_systems.CoordinateSystem = gin.REQUIRED,
+      corrector_module: CorrectorModule = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
+      custom_coords: coordinate_systems.CoordinateSystem = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
       name: Optional[str] = None,
   ):
     super().__init__(name=name)

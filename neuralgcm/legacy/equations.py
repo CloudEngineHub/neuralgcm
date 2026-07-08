@@ -69,7 +69,7 @@ class ShallowWaterEquations(shallow_water.ShallowWaterEquations):
     modal_orography = modal_orography_init_fn()  # pytype: disable=not-callable  # jax-ndarray
     super().__init__(
         coords=coords,
-        physics_specs=physics_specs,
+        physics_specs=physics_specs,  # pyrefly: ignore[bad-argument-type]
         orography=modal_orography,
         reference_potential=reference_potential,
     )
@@ -100,7 +100,7 @@ class PrimitiveEquations(primitive_equations.PrimitiveEquations):
     modal_orography = modal_orography_init_fn()  # pytype: disable=not-callable  # jax-ndarray
     super().__init__(
         coords=coords,
-        physics_specs=physics_specs,
+        physics_specs=physics_specs,  # pyrefly: ignore[bad-argument-type]
         reference_temperature=ref_temperatures,
         orography=modal_orography,
         vertical_advection=vertical_advection,
@@ -135,7 +135,7 @@ class PrimitiveEquationsWithTime(
     modal_orography = modal_orography_init_fn()  # pytype: disable=not-callable  # jax-ndarray
     super().__init__(
         coords=coords,
-        physics_specs=physics_specs,
+        physics_specs=physics_specs,  # pyrefly: ignore[bad-argument-type]
         reference_temperature=ref_temperatures,
         orography=modal_orography,
         vertical_advection=vertical_advection,
@@ -170,7 +170,7 @@ class MoistPrimitiveEquations(
     modal_orography = modal_orography_init_fn()  # pytype: disable=not-callable  # jax-ndarray
     super().__init__(
         coords=coords,
-        physics_specs=physics_specs,
+        physics_specs=physics_specs,  # pyrefly: ignore[bad-argument-type]
         reference_temperature=ref_temperatures,
         orography=modal_orography,
         vertical_advection=vertical_advection,
@@ -205,7 +205,7 @@ class MoistPrimitiveEquationsWithCloudMoisture(
     modal_orography = modal_orography_init_fn()  # pytype: disable=not-callable  # jax-ndarray
     super().__init__(
         coords=coords,
-        physics_specs=physics_specs,
+        physics_specs=physics_specs,  # pyrefly: ignore[bad-argument-type]
         reference_temperature=ref_temperatures,
         orography=modal_orography,
         vertical_advection=vertical_advection,
@@ -237,7 +237,7 @@ class HeldSuarezEquations(held_suarez.HeldSuarezForcing):
       raise ValueError(f'must supply {REF_TEMP_KEY} in `aux_features`.')
     super().__init__(
         coords=coords,
-        physics_specs=physics_specs,
+        physics_specs=physics_specs,  # pyrefly: ignore[bad-argument-type]
         reference_temperature=ref_temperatures)
 
 
@@ -258,7 +258,7 @@ class VerticalDiffusion(time_integration.ExplicitODE):
   ):
     self.coords = coords
     timescale = dt / physics_specs.nondimensionalize(scales.Quantity(timescale))
-    timescales = coords.vertical.boundaries * timescale
+    timescales = coords.vertical.boundaries * timescale  # pyrefly: ignore[missing-attribute]
     self.level_weighted_timescales = timescales[:, jnp.newaxis, jnp.newaxis]
 
   def explicit_terms(self, state: typing.PyTreeState) -> typing.PyTreeState:
@@ -274,7 +274,7 @@ class VerticalDiffusion(time_integration.ExplicitODE):
 
     nodal_state = self.coords.horizontal.to_nodal(state)
     nodal_tendency = pytree_utils.tree_map_where(
-        condition_fn=lambda x: jnp.asarray(x).shape == self.coords.nodal_shape,
+        condition_fn=lambda x: jnp.asarray(x).shape == self.coords.nodal_shape,  # pyrefly: ignore[bad-argument-type]
         f=vertical_diffusion_fn,
         g=jnp.zeros_like,
         x=nodal_state)
@@ -290,10 +290,10 @@ class NoDynamics(time_integration.ImplicitExplicitODE):
     del args, kwargs
 
   def explicit_terms(self, x: typing.PyTreeState) -> typing.PyTreeState:
-    return 0 * x
+    return 0 * x  # pyrefly: ignore[bad-return, unsupported-operation]
 
   def implicit_terms(self, x: typing.PyTreeState) -> typing.PyTreeState:
-    return 0 * x
+    return 0 * x  # pyrefly: ignore[bad-return, unsupported-operation]
 
   def implicit_inverse(
       self, x: typing.PyTreeState, time_step: float

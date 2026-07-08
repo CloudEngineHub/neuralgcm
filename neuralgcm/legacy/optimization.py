@@ -171,7 +171,7 @@ def top_level_multi_adam(
     return optax.adam(lr, b1=b1, b2=b2, eps=eps)
 
   return optax.multi_transform(
-      transforms={
+      transforms={  # pyrefly: ignore[bad-argument-type]
           k: make_adam(lr) for k, lr in zip(top_level_keys, learning_rates)
       }
       | {default_label: make_adam(default_learning_rate)},

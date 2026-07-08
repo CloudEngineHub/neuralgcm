@@ -40,8 +40,8 @@ class MlpUniform(hk.nets.MLP):
   def __init__(
       self,
       output_size: int,
-      num_hidden_units: int = gin.REQUIRED,
-      num_hidden_layers: int = gin.REQUIRED,
+      num_hidden_units: int = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
+      num_hidden_layers: int = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
       w_init: Optional[hk.initializers.Initializer] = None,
       b_init: Optional[hk.initializers.Initializer] = None,
       with_bias: bool = True,
@@ -90,7 +90,7 @@ class ConvLonLat(hk.Module):
   def __init__(
       self,
       output_size: int,
-      kernel_shape: Tuple[int, int] = gin.REQUIRED,
+      kernel_shape: Tuple[int, int] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
       with_bias: bool = True,
       name: Optional[str] = None,
   ):
@@ -331,7 +331,7 @@ class LevelTransformer(hk.Module):
       # connects residual updates from the previous layer; skipped first time.
       h = self.gating_fn(h, h_dense) if h_dense is not None else h
       # apply layer norm before the attention block, as in GTrXL.
-      h_norm = self.layer_norm(h)
+      h_norm = self.layer_norm(h)  # pyrefly: ignore[bad-argument-type]
       attn_block = hk.MultiHeadAttention(
           num_heads=self.num_heads,
           key_size=self.key_size,
@@ -341,7 +341,7 @@ class LevelTransformer(hk.Module):
       )
       # attend to `latents` if in decoding stage, otherwise use self-attention.
       h_attn = attn_block(
-          query=init_query_input if layer_id == special_query_stage else h_norm,
+          query=init_query_input if layer_id == special_query_stage else h_norm,  # pyrefly: ignore[unbound-name]
           key=latents if latents is not None else h_norm,
           value=latents if latents is not None else h_norm,
       )
@@ -353,7 +353,7 @@ class LevelTransformer(hk.Module):
             self.activation,
             hk.Linear(self.latent_size, w_init=self.w_init),
         ])
-        h_dense = dense_block(self.layer_norm(h))
+        h_dense = dense_block(self.layer_norm(h))  # pyrefly: ignore[bad-argument-type]
 
     h_dense = self.final_projection(h)
     h_dense = jnp.transpose(h_dense)  # transpose back to [channels, levels].
@@ -381,8 +381,8 @@ class LevelBiLSTM(hk.Module):
   def __init__(
       self,
       output_size: int,
-      hidden_size: int = gin.REQUIRED,
-      n_layers: int = gin.REQUIRED,
+      hidden_size: int = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
+      n_layers: int = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
       final_activation: Optional[Callable[[jnp.ndarray], jnp.ndarray]] = None,
       window_size: int = 1,
       name='lstm'):
@@ -436,7 +436,7 @@ class LevelBiLSTM(hk.Module):
       )
       outputs = jnp.concatenate([fw_outputs, bw_outputs], axis=-1)
       inputs = outputs
-    h_dense = self.final_projection(outputs)
+    h_dense = self.final_projection(outputs)  # pyrefly: ignore[unbound-name]
     if self.final_activation is not None:
       h_dense = self.final_activation(h_dense)
     h_dense = jnp.transpose(h_dense)  # transpose back to [channels, levels].

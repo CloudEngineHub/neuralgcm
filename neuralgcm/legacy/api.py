@@ -57,7 +57,7 @@ def _sim_time_from_state(state: State) -> jax.Array:
     sim_time = getattr(state.state, 'sim_time', None)
   else:
     sim_time = getattr(state, 'sim_time', None)
-  return sim_time
+  return sim_time  # pyrefly: ignore[bad-return]
 
 
 def _calculate_sub_steps(
@@ -387,7 +387,7 @@ class PressureLevelModel:
     for k in self._forcing_variables:
       if k in forcings:
         assert isinstance(forcings[k], (np.ndarray, jax.Array))
-        forcings[k] = forcings[k].squeeze(axis=-3)
+        forcings[k] = forcings[k].squeeze(axis=-3)  # pyrefly: ignore[missing-attribute]
     return forcings
 
   @jax.jit

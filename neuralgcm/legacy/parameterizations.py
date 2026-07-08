@@ -76,7 +76,7 @@ class DirectNeuralParameterization(hk.Module):
     prediction_mask = self.prediction_mask
     if prediction_mask is None:
       prediction_mask = pytree_utils.tree_map_over_nonscalars(
-          lambda _: True, inputs, scalar_fn=lambda _: False
+          lambda _: True, inputs, scalar_fn=lambda _: False  # pyrefly: ignore[bad-argument-type]
       )
     prediction_shapes = jax.tree_util.tree_map(
         lambda x, y: x if y else None,
@@ -146,7 +146,7 @@ class DivCurlNeuralParameterization(hk.Module):
     prediction_mask = self.prediction_mask
     if prediction_mask is None:
       prediction_mask = pytree_utils.tree_map_over_nonscalars(
-          lambda _: True, inputs, scalar_fn=lambda _: False
+          lambda _: True, inputs, scalar_fn=lambda _: False  # pyrefly: ignore[bad-argument-type]
       )
     prediction_shapes = jax.tree_util.tree_map(
         lambda x, y: self.get_nodal_shape_fn(x) if y else None,

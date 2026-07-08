@@ -331,7 +331,7 @@ class ForcingFeatures(hk.Module):
     del inputs, memory, diagnostics, randomness
     features = {}
     for key in self.forcing_to_include:
-      value = forcing[key]
+      value = forcing[key]  # pyrefly: ignore[unsupported-operation]
       # Expect singleton "level" dimension for surface forcings
       if value.ndim > 3:
         raise ValueError(
@@ -486,7 +486,7 @@ class OneHotAuxFeatures(hk.Module):
       dt: float,
       physics_specs: Any,
       aux_features: typing.AuxFeatures,
-      covariate_keys: Sequence[str] = gin.REQUIRED,
+      covariate_keys: Sequence[str] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
       convert_float_to_int: bool = False,
       name: Optional[str] = None,
   ):
@@ -611,7 +611,7 @@ class EmbeddingSurfaceFeatures(hk.Module):
       forcing: Optional[typing.Pytree] = None,
   ) -> typing.Pytree:
     features = self.embedding_fn(
-        inputs, memory, diagnostics, randomness, forcing
+        inputs, memory, diagnostics, randomness, forcing  # pyrefly: ignore[bad-argument-type]
     )
     return self.features_transform_fn(features)
 
@@ -663,7 +663,7 @@ class EmbeddingVolumeFeatures(hk.Module):
       forcing: Optional[typing.Pytree] = None,
   ) -> typing.Pytree:
     features = self.embedding_fn(
-        inputs, memory, diagnostics, randomness, forcing
+        inputs, memory, diagnostics, randomness, forcing  # pyrefly: ignore[bad-argument-type]
     )
     return self.features_transform_fn(features)
 
@@ -678,8 +678,8 @@ class FloatDataFeatures(hk.Module):
       dt: float,
       physics_specs: Any,
       aux_features: typing.AuxFeatures,
-      covariate_data_path: str = gin.REQUIRED,
-      covariate_keys: Sequence[str] = gin.REQUIRED,
+      covariate_data_path: str = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
+      covariate_keys: Sequence[str] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
       renaming_dict: Optional[Mapping[str, str]] = None,
       compute_gradients_module: TransformModule = transforms.EmptyTransform,
       name: Optional[str] = None,
@@ -738,7 +738,7 @@ class CombinedFeatures(hk.Module):
       dt: float,
       physics_specs: Any,
       aux_features: typing.AuxFeatures,
-      feature_modules: Sequence[FeaturesModule] = gin.REQUIRED,
+      feature_modules: Sequence[FeaturesModule] = gin.REQUIRED,  # pyrefly: ignore[bad-function-definition]
       feature_module_names_to_exclude: Sequence[str] = tuple(),
       features_to_exclude: Sequence[str] = tuple(),
       features_transform_module: TransformModule = transforms.IdentityTransform,

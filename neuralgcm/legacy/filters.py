@@ -288,14 +288,14 @@ class LayeredStepFilter(hk.Module):
     tau = (np.asarray(tau_vals) * scales.Quantity(tau_units))
     tau = tau[:, np.newaxis, np.newaxis]  # add spatial axes.
     self.filter_fn = filter_module(
-        coords, dt, physics_specs, aux_features, tau=tau)
+        coords, dt, physics_specs, aux_features, tau=tau)  # pyrefly: ignore[bad-argument-count, unexpected-keyword]
 
   def __call__(
       self,
       u: typing.PyTreeState,
       u_next: typing.PyTreeState
   ) -> typing.PyTreeState:
-    return self.filter_fn(u, u_next)
+    return self.filter_fn(u, u_next)  # pyrefly: ignore[not-callable]
 
 
 @gin.register

@@ -203,7 +203,7 @@ class NodalSurfaceModelEmbedding(hk.Module):
     # snow data is provided as depth (in meters). It is converted to snow_cover
     # by choosing a threshold such that snow_cover = 0 below that value and
     # snow cover = 1 above that value.
-    self.snow_cover_threshold = physics_specs.nondimensionalize(1 * units.meter)
+    self.snow_cover_threshold = physics_specs.nondimensionalize(1 * units.meter)  # pyrefly: ignore[unsupported-operation]
 
   def __call__(
       self,
@@ -215,20 +215,20 @@ class NodalSurfaceModelEmbedding(hk.Module):
   ) -> typing.Pytree:
     """Returns the embedding output on nodal locations."""
     land_outputs = self.land_embedding_fn(
-        state, memory, diagnostics, randomness, forcing)
+        state, memory, diagnostics, randomness, forcing)  # pyrefly: ignore[bad-argument-count]
     sea_outputs = self.sea_embedding_fn(
-        state, memory, diagnostics, randomness, forcing)
+        state, memory, diagnostics, randomness, forcing)  # pyrefly: ignore[bad-argument-count]
     sea_ice_outputs = self.sea_ice_embedding_fn(
-        state, memory, diagnostics, randomness, forcing
+        state, memory, diagnostics, randomness, forcing  # pyrefly: ignore[bad-argument-count]
     )
     snow_outputs = self.snow_embedding_fn(
-        state, memory, diagnostics, randomness, forcing)
+        state, memory, diagnostics, randomness, forcing)  # pyrefly: ignore[bad-argument-count]
 
     # prepare masks with fractional values in [0, 1]
     land_fraction = self.land_sea_mask
     sea_fraction = 1 - land_fraction
-    sea_ice_fraction = forcing[xarray_utils.SEA_ICE_COVER]
-    snow_fraction = forcing[xarray_utils.SNOW_DEPTH] > self.snow_cover_threshold
+    sea_ice_fraction = forcing[xarray_utils.SEA_ICE_COVER]  # pyrefly: ignore[unsupported-operation]
+    snow_fraction = forcing[xarray_utils.SNOW_DEPTH] > self.snow_cover_threshold  # pyrefly: ignore[unsupported-operation]
 
     # weight and combine outputs
     snow_weight = snow_fraction * land_fraction  # snow covered land
@@ -359,7 +359,7 @@ class NodalLandSeaIceEmbedding(hk.Module):
     # prepare masks with fractional values in [0, 1]
     land_fraction = self.land_sea_mask
     sea_fraction = 1 - land_fraction
-    sea_ice_fraction = forcing[xarray_utils.SEA_ICE_COVER]
+    sea_ice_fraction = forcing[xarray_utils.SEA_ICE_COVER]  # pyrefly: ignore[unsupported-operation]
 
     # weight and combine outputs
     land_weight = land_fraction

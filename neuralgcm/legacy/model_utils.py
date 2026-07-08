@@ -81,7 +81,7 @@ def with_forcing(
       sim_time = jax.numpy.asarray(sim_time)
       if sim_time.ndim:
         forcing_fn = jax.vmap(forcing_fn, in_axes=(None, 0))
-    forcing = forcing_fn(forcing_data, sim_time)
+    forcing = forcing_fn(forcing_data, sim_time)  # pyrefly: ignore[bad-argument-type]
     return fn(x, forcing=forcing)
   return wrapped
 
@@ -122,7 +122,7 @@ def with_input_included(
   if num_last_input_frames_to_trim > 0:
     num_last_input_frames_to_trim = -num_last_input_frames_to_trim
   else:
-    num_last_input_frames_to_trim = None
+    num_last_input_frames_to_trim = None  # pyrefly: ignore[bad-assignment]
   inputs_time_slice = slice(None, num_last_input_frames_to_trim)
   @functools.wraps(trajectory_fn)
   def _trajectory(x, *args, **kwargs):
@@ -418,13 +418,13 @@ def compute_prediction_representations(
     # Losses operate on dicts: convert struct to dict if needed.
     predicted_trajectory = predicted_trajectory.asdict()
   return typing.TrajectoryRepresentations(
-      data_nodal_trajectory=process_trajectory(
+      data_nodal_trajectory=process_trajectory(  # pyrefly: ignore[unexpected-keyword]
           predicted_data_trajectory, data_to_nodal),
-      data_modal_trajectory=process_trajectory(
+      data_modal_trajectory=process_trajectory(  # pyrefly: ignore[unexpected-keyword]
           predicted_data_trajectory, data_to_modal),
-      model_nodal_trajectory=process_trajectory(
+      model_nodal_trajectory=process_trajectory(  # pyrefly: ignore[unexpected-keyword]
           predicted_trajectory, model_to_nodal),
-      model_modal_trajectory=process_trajectory(
+      model_modal_trajectory=process_trajectory(  # pyrefly: ignore[unexpected-keyword]
           predicted_trajectory, model_to_modal),
   )
 
@@ -466,13 +466,13 @@ def compute_target_representations(
     # Losses operate on dicts: convert struct to dict if needed.
     target_model_trajectory = target_model_trajectory.asdict()
   return typing.TrajectoryRepresentations(
-      data_nodal_trajectory=process_trajectory(
+      data_nodal_trajectory=process_trajectory(  # pyrefly: ignore[unexpected-keyword]
           target_trajectory, data_to_nodal),
-      data_modal_trajectory=process_trajectory(
+      data_modal_trajectory=process_trajectory(  # pyrefly: ignore[unexpected-keyword]
           target_trajectory, data_to_modal),
-      model_nodal_trajectory=process_trajectory(
+      model_nodal_trajectory=process_trajectory(  # pyrefly: ignore[unexpected-keyword]
           target_model_trajectory, model_to_nodal),
-      model_modal_trajectory=process_trajectory(
+      model_modal_trajectory=process_trajectory(  # pyrefly: ignore[unexpected-keyword]
           target_model_trajectory, model_to_modal),
   )
 
